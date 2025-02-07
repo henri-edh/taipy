@@ -89,10 +89,7 @@ class _ElementApiGenerator(object, metaclass=_Singleton):
                 f"Python API for extension library '{library_name}' is not available. To fix this, import 'taipy.gui.builder' before importing the extension library."  # noqa: E501
             )
             return
-        library_module = getattr(self.__module, library_name, None)
-        if library_module is None:
-            library_module = types.ModuleType(library_name)
-            setattr(self.__module, library_name, library_module)
+        library_module = sys.modules[library.__module__]
         for element_name, element in library.get_elements().items():
             setattr(
                 library_module,
@@ -104,13 +101,13 @@ class _ElementApiGenerator(object, metaclass=_Singleton):
                     {name: str(prop.property_type) for name, prop in element.attributes.items()},
                 ),
             )
-            # Allow element to be accessed from the root module
+            # Allow element to be accessed from this module (taipy.gui.builder)
             if hasattr(self.__module, element_name):
                 _TaipyLogger._get_logger().info(
                     f"Can't add element `{element_name}` of library `{library_name}` to the root of Builder API as another element with the same name already exists."  # noqa: E501
                 )
-                continue
-            setattr(self.__module, element_name, getattr(library_module, element_name))
+            else:
+                setattr(self.__module, element_name, getattr(library_module, element_name))
 
     @staticmethod
     def create_block_api(

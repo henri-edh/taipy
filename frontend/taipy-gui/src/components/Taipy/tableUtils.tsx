@@ -45,10 +45,6 @@ import { dateToString, getDateTime, getDateTimeString, getNumberString, getTimeZ
 import { TaipyActiveProps, TaipyMultiSelectProps, getSuffixedClassNames } from "./utils";
 
 /**
- * A column description as received by the backend.
- */
-
-/**
  * Generates a  CSS class name for a table header.
  * @param columnName - The name of the column.
  * @returns for CSS class name.
@@ -62,6 +58,10 @@ export const generateHeaderClassName = (columnName: string | undefined): string 
     }
     return "-" + columnName.replace(/\W+/g, "-").replace(/-+/g, "-").toLowerCase();
 };
+
+/**
+ * A column description as received by the backend.
+ */
 
 export interface ColumnDesc {
     /** The unique column identifier. */
